@@ -1,4 +1,5 @@
 from functools import reduce
+import time
 
 class ID:
     def __init__(self, id_value: str):
@@ -10,12 +11,20 @@ class ID:
         repeating = []
         for number in ranges:
             str_num = str(number)
-            if(len(str_num) % 2 == 0):
-                mid = len(str_num) // 2
-                first_half = str_num[:mid]
-                second_half = str_num[mid:]
-                if first_half == second_half:
+
+            for i in range(1, len(str_num) + 1):
+                block_size = i
+
+                blocks = [str_num[j:j + block_size] for j in range(0, len(str_num), block_size)]
+
+                equals = True
+                for block in blocks:
+                    if block != blocks[0]:
+                        equals = False
+                        break
+                if equals and len(blocks) > 1:
                     repeating.append(number)
+                    break
 
         return reduce(lambda a, b: a + b, repeating, 0)
 
