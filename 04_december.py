@@ -26,29 +26,38 @@ class Grid:
 with open('./inputs/04_input.txt', 'r') as file:
     lines = [list(line) for line in file.read().strip().split('\n')]
 
-line_amounts = len(lines)
 line_length = len(lines[0])
 lines.insert(0, ['.'] * line_length)
 lines.append(['.'] * line_length)
 
-paper_rolls = 0
+total_removed = 0
 
-for line in lines:
-    line.insert(0, '.')
-    line.append('.')
+while True:
+    to_remove = []
 
-for i in range(1, len(lines) - 1):
-    line = lines[i]
+    for line in lines:
+        line.insert(0, '.')
+        line.append('.')
 
-    for j in range(1, len(lines[0]) - 1):
-        if(lines[i][j] == '.'):
-            continue
+    for i in range(1, len(lines) - 1):
+        line = lines[i]
 
-        top_row = Row(lines[i-1][j-1], lines[i-1][j], lines[i-1][j+1])
-        middle_row = Row(lines[i][j-1], lines[i][j], lines[i][j+1])
-        bottom_row = Row(lines[i+1][j-1], lines[i+1][j], lines[i+1][j+1])
-        grid = Grid(top_row, middle_row, bottom_row)
-        if grid.has_less_than_x_neighbours(4):
-            paper_rolls += 1
+        for j in range(1, len(lines[0]) - 1):
+            if(lines[i][j] == '.'):
+                continue
 
-print(paper_rolls)
+            top_row = Row(lines[i-1][j-1], lines[i-1][j], lines[i-1][j+1])
+            middle_row = Row(lines[i][j-1], lines[i][j], lines[i][j+1])
+            bottom_row = Row(lines[i+1][j-1], lines[i+1][j], lines[i+1][j+1])
+            grid = Grid(top_row, middle_row, bottom_row)
+            if grid.has_less_than_x_neighbours(4):
+                to_remove.append((i, j))
+
+    if len(to_remove) == 0:
+        break
+
+    total_removed += len(to_remove)
+    for coord in to_remove:
+        lines[coord[0]][coord[1]] = '.'
+
+print(total_removed)
